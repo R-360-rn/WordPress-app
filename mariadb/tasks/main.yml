@@ -1,0 +1,75 @@
+- name: Install mariadb and mysql_user module dependencies
+  become: yes
+  become_user: root
+  apt:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  notify: restart mariadb
+
+# - name: Install pip for 2.7 and 3+
+#   become: yes
+#   become_user: root
+#   apt:
+#     name: "{{ pip }}"
+#     state: latest
+
+- name: Install db module dependencies for Ansible
+  become: yes
+  become_user: root
+  pip:
+    name: "{{ ansible_db_module_dependencies }}"
+    state: latest
+
+- name: Set root password
+  become: yes
+  become_user: root
+  shell: mysqladmin -u root password testroot
+  args:
+    creates: /home/root/.my.cnf
+
+- name: Creating /home/root/
+  become: yes
+  become_user: root
+  file:
+    path: /home/root/
+    state: directory
+    owner: root
+    mode: '0700'
+
+- name: Creating /home/root/.my.cnf
+  become: yes
+  become_user: root
+  template:
+    src: my.cnf.j2
+    dest: /home/root/.my.cnf
+    owner: root
+    mode: '0600'
+
+- name: Delete anonymous user
+  become: yes
+  become_user: root
+  mysql_user:
+    login_unix_socket: /run/mysqld/mysqld.sock
+    name: ""
+    host: localhost
+    state: absent
+
+- name: Create DB
+  become: yes
+  become_user: root
+  mysql_db:
+    login_unix_socket: /run/mysqld/mysqld.sock
+    name: WP_DB
+    state: present
+
+- name: Create DB user
+  become: yes
+  become_user: root
+  mysql_user:
+    login_unix_socket: /run/mysqld/mysqld.sock
+    name: "wpdbuser"
+    host: localhost
+    state: present
+    password: test123
+    priv: "*.*:ALL,GRANT"

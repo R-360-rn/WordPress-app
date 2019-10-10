@@ -1,2 +1,8 @@
 ---
 # defaults file for WordPress
+  - hosts: all
+    tasks:
+      - name: nginx role
+      - include_role:
+          name: nginx
+          tasks_from: nginx

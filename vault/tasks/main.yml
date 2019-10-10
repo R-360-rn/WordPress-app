@@ -1,0 +1,10 @@
+---
+# tasks file for WordPress
+- name: Generate vault password
+  shell: cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1 > {{ vault_password_file }}
+
+- name: Generate file with passwords
+  shell: cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1 > {{ services_passwords_file }}
+
+- name: Encrypt files
+  shell: ansible-vault encrypt --vault-password-file={{vault_password_file}} {{ services_passwords_file }}

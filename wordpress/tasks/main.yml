@@ -1,0 +1,77 @@
+---
+# tasks file for WordPress
+
+- name: Download WordPress
+  get_url:
+    url: https://wordpress.org/latest.tar.gz
+    dest: /tmp/wplatest.tar.gz
+
+- name: Extract files from archive to default site directory
+  become: yes
+  become_user: root
+  unarchive:
+    src: /tmp/wplatest.tar.gz
+    dest: /var/www/html/
+    owner: root
+    group: www-data
+    mode: '0755'
+    extra_opts: [--strip-components=1]
+
+- name: Copy wp-config.php from template
+  become: yes
+  become_user: root
+  template:
+    src: wp-config.php.j2
+    dest: /var/www/html/wp-config.php
+    owner: root
+    mode: '0755'
+
+- name: Permissions change for wp-content
+  become: yes
+  become_user: root
+  file:
+    path: /var/www/html/wp-content/
+    state: directory
+    mode: '0755'
+
+- name: Permissions change for wp-content/*
+  become: yes
+  become_user: root
+  file:
+    path: /var/www/html/wp-content/
+    state: directory
+    recurse: yes
+    owner: root
+    group: www-data
+    mode: '0644'
+
+- name: Permissions change for wp-includes
+  become: yes
+  become_user: root
+  file:
+    path: /var/www/html/wp-includes/
+    recurse: yes
+    state: directory
+    owner: root
+    group: www-data
+    mode: '0755'
+  notify: restart php-fpm
+  notify: restart nginx
+
+- name: Permissions change for wp-config.php
+  become: yes
+  become_user: root
+  file:
+    path: /var/www/html/wp-config.php
+    owner: root
+    group: www-data
+    mode: '0440'
+
+- name: Permissions change for index.php
+  become: yes
+  become_user: root
+  file:
+    path: /var/www/html/index.php
+    owner: root
+    group: www-data
+    mode: '0444'

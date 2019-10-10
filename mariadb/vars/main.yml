@@ -1,0 +1,14 @@
+---
+# vars file for WordPress
+pip:
+
+
+ansible_db_module_dependencies:
+  pymysql
+
+packages:
+  - mariadb-server
+  - python-pip
+  - python3-pip
+  - python-pymysql
+  - python3-pymysql

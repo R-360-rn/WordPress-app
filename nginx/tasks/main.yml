@@ -1,0 +1,33 @@
+- name: Update apt
+  become: yes
+  become_user: root
+  apt:
+    update_cache: yes
+
+- name: Install nginx
+  become: yes
+  become_user: root
+  apt:
+    name: nginx
+    state: latest
+    update_cache: yes
+
+
+- name: Copy default site config
+  become: yes
+  become_user: root
+  template:
+    src: default.j2
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: '0622'
+
+
+- name: Remove default html file
+  become: yes
+  become_user: root
+  file:
+    path: /var/www/html/index.nginx-debian.html
+    state: absent
+  notify: restart nginx

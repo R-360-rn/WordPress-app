@@ -1,0 +1,24 @@
+---
+# tasks file for WordPress
+- name: Add php repo
+  sudo: yes
+  apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+    update_cache: yes
+
+- name: Apt update && upgrade
+  become: yes
+  become_user: root
+  apt:
+    update_cache: yes
+    upgrade: full
+
+- name: Install php
+  become: yes
+  become_user: root
+  apt:
+    name: "{{php}}"
+    state: latest
+  notify: Restart php-fpm
+  notify: restart nginx

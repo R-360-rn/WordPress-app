@@ -1,0 +1,13 @@
+---
+# handlers file for WordPress
+- name: restart mariadb
+  service:
+    name: mysql
+    state: restarted
+  become: yes
+
+- name: start mariadb
+  service:
+    name: mysql
+    state: started
+  become: yes

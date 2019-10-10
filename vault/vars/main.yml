@@ -1,0 +1,4 @@
+---
+# vars file for WordPress
+vault_password_file: "/home/vagrant/password.vault"
+services_passwords_file: "/home/vagrant/ansible_vault.main"
