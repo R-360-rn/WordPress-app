@@ -1,7 +1,6 @@
----
 # tasks file for WordPress
 - name: Add php repo
-  sudo: yes
+  become: yes
   apt_repository:
     repo: ppa:ondrej/php
     state: present

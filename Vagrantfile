@@ -1,12 +1,12 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "bento/ubuntu-20.04"
   config.vm.define :vagrant do |vagrant|
-  config.vm.hostname = "WP-01-TEST"
-  config.vm.network "forwarded_port", guest: "80", host: "80"''
+  config.vm.hostname = "WP-01-DEV"
+  config.vm.network "forwarded_port", guest: "80", host: "8080"''
   end
 
   config.vm.provider :virtualbox do |virtualbox|
-    virtualbox.name = "WP-01-TEST"
+    virtualbox.name = "WP-01-DEV"
   end
 
   config.vm.provision "ansible_local" do |ansible|
